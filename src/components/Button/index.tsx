@@ -1,10 +1,10 @@
 import React from 'react';
-import { RectButtonProps } from 'react-native-gesture-handler';
+import { TouchableOpacityProps } from 'react-native';
 import {
     Container, TypeButtonProps, Load, Title
 } from './styles';
 
-interface ButtonProps extends RectButtonProps {
+interface ButtonProps extends TouchableOpacityProps {
     title: string;
     type?: TypeButtonProps;
     isLoading?: boolean;
@@ -12,7 +12,7 @@ interface ButtonProps extends RectButtonProps {
 
 export function Button({ title, type = 'primary', isLoading = false, ...rest }: ButtonProps) {
     return (
-        <Container type={type} enabled={!isLoading}  {...rest}>
+        <Container type={type} {...rest}>
             {isLoading ? <Load /> : <Title> {title} </Title>}
         </Container>
     );
