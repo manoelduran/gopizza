@@ -10,7 +10,6 @@ import {
 import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components/native';
 import theme from './src/theme';
-import { SignIn } from '@screens/SignIn';
 import { AuthProvider } from '@hooks/auth';
 import { Product } from '@screens/Product';
 export default function App() {
