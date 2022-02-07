@@ -13,11 +13,14 @@ import {
 } from './styles';
 import { useAuth } from '@hooks/auth';
 export function SignIn() {
-    const { signIn, isLoading } = useAuth();
+    const { signIn, isLoading, forgetPassword } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     function handleSignIn() {
         signIn(email, password);
+    }
+    function handleForgotPassword() {
+        forgetPassword(email)
     }
     return (
         <Container>
@@ -38,7 +41,7 @@ export function SignIn() {
                         type="secundary"
                         secureTextEntry
                     />
-                    <ForgotPasswordButton>
+                    <ForgotPasswordButton onPress={handleForgotPassword}>
                         <ForgotPasswordLabel>Esqueci minha senha</ForgotPasswordLabel>
                     </ForgotPasswordButton>
                     <Button title='Conectar' type='primary' onPress={handleSignIn} isLoading={isLoading} />
