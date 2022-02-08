@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import happyEmoji from '@assets/happy.png';
 import { useAuth } from '@hooks/auth';
 import { Search } from '@components/Search';
 import { ListHeader } from '@components/ListHeader';
+import { ProductCard, ProductProps } from '@components/ProductCard';
+import firestore from '@react-native-firebase/firestore';
 import {
     Container,
     Header,
@@ -18,9 +21,42 @@ import {
 } from './styles';
 
 
+
+
 export function Home() {
     const { signOut } = useAuth();
     const theme = useTheme();
+    const [pizzas, setPizzas] = useState<ProductProps[]>([]);
+    const [search, setSearch] = useState('');
+    function getPizzas(value: string) {
+        const formattedValue = value.toLowerCase().trim();
+        firestore()
+            .collection('pizzas')
+            .orderBy('name_insensitive')
+            .startAt(formattedValue)
+            .endAt(`${formattedValue}\uf8ff`)
+            .get()
+            .then(response => {
+                const data = response.docs.map(doc => {
+                    return {
+                        id: doc.id,
+                        ...doc.data(),
+                    };
+                }) as ProductProps[];
+                setPizzas(data);
+            })
+            .catch(() => Alert.alert('Consulta', 'Não foi possivel realizar a consulta'))
+    };
+    function handleSearchPizza() {
+        getPizzas(search);
+    };
+    function handleClearPizza() {
+        setSearch('');
+        getPizzas('');
+    };
+    useEffect(() => {
+        getPizzas(search);
+    }, [])
     return (
         <Container>
             <Header>
@@ -37,13 +73,31 @@ export function Home() {
                 </LogOut>
             </Header>
             <Search
-                onSearch={() => { }} onClear={() => { }}
+                value={search}
+                onChangeText={setSearch}
+                onSearch={handleSearchPizza}
+                onClear={handleClearPizza}
             />
             <MenuHeader>
                 <Title>Cardápio</Title>
                 <ListHeader />
                 <MenuItemsNumber>321</MenuItemsNumber>
             </MenuHeader>
+            <FlatList
+                data={pizzas}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) =>
+                    <ProductCard
+                        data={item}
+                    />
+                }
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingTop: 20,
+                    paddingBottom: 125,
+                    marginHorizontal: 24
+                }}
+            />
         </Container>
     );
 }
