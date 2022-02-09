@@ -11,8 +11,7 @@ import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components/native';
 import theme from './src/theme';
 import { AuthProvider } from '@hooks/auth';
-import { Product } from '@screens/Product';
-import { Home } from '@screens/Home';
+import { Routes } from './src/routes';
 export default function App() {
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -25,7 +24,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <StatusBar style='light' translucent backgroundColor='transparent' />
       <AuthProvider>
-        <Home/>
+    <Routes/>
       </AuthProvider>
     </ThemeProvider>
   );

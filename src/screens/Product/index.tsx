@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { ProductNavigationProps } from '@src/@types/navigation';
 import { Platform, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { BackButton } from '@components/BackButton';
 import { Photo } from '@components/Photo';
@@ -21,6 +22,7 @@ import {
     Label,
     MaxCharacters
 } from './styles';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 export function Product() {
@@ -31,6 +33,9 @@ export function Product() {
     const [medium, setMedium] = useState('');
     const [large, setLarge] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const route = useRoute();
+    const navigation = useNavigation();
+    const { id } = route.params as ProductNavigationProps;
     async function handlePickImage() {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status === 'granted') {
@@ -83,13 +88,18 @@ export function Product() {
             })
             .then(() => Alert.alert('Cadastro', 'Pizza cadastrada com sucesso!'))
             .catch(() => Alert.alert('Cadastro', 'Não foi possivel cadastrar a pizza'));
-            setIsLoading(false);
+        setIsLoading(false);
+    };
+    function handleGoBack() {
+        navigation.goBack();
     };
     return (
         <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
             <ScrollView showsVerticalScrollIndicator={false} >
                 <Header>
-                    <BackButton />
+                    <BackButton
+                        onPress={handleGoBack}
+                    />
                     <Title>Cadastrar</Title>
                     <TouchableOpacity>
                         <DeleteLabel>Deletar</DeleteLabel>

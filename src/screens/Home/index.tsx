@@ -8,6 +8,7 @@ import { Search } from '@components/Search';
 import { ListHeader } from '@components/ListHeader';
 import { ProductCard, ProductProps } from '@components/ProductCard';
 import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 import {
     Container,
     Header,
@@ -21,10 +22,9 @@ import {
 } from './styles';
 
 
-
-
 export function Home() {
     const { signOut } = useAuth();
+    const navigation = useNavigation();
     const theme = useTheme();
     const [pizzas, setPizzas] = useState<ProductProps[]>([]);
     const [search, setSearch] = useState('');
@@ -53,6 +53,11 @@ export function Home() {
     function handleClearPizza() {
         setSearch('');
         getPizzas('');
+    };
+    function handlePizza(id: string) {
+        navigation.navigate('Product', {
+            id
+        });
     };
     useEffect(() => {
         getPizzas(search);
@@ -89,6 +94,7 @@ export function Home() {
                 renderItem={({ item }) =>
                     <ProductCard
                         data={item}
+                        onPress={() => handlePizza(item.id)}
                     />
                 }
                 showsVerticalScrollIndicator={false}
