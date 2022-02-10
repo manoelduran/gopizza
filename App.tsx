@@ -12,6 +12,7 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './src/theme';
 import { AuthProvider } from '@hooks/auth';
 import { Routes } from './src/routes';
+import { Order } from '@screens/Order';
 export default function App() {
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -24,7 +25,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <StatusBar style='light' translucent backgroundColor='transparent' />
       <AuthProvider>
-    <Routes/>
+    <Order/>
       </AuthProvider>
     </ThemeProvider>
   );

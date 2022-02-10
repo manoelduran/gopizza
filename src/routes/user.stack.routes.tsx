@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home } from '@screens/Home';
 import { Product } from '@screens/Product';
+import { Order } from '@screens/Order';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -21,6 +22,13 @@ export function UserStackRoutes() {
                     headerShown: false
                 }}
                 component={Product}
+            />
+            <Screen
+                name="Order"
+                options={{
+                    headerShown: false
+                }}
+                component={Order}
             />
         </Navigator>
     );

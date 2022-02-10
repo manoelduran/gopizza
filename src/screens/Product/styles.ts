@@ -1,6 +1,6 @@
 import { Button } from "@components/Button";
 import { LinearGradient } from "expo-linear-gradient";
-import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { getBottomSpace, getStatusBarHeight } from "react-native-iphone-x-helper";
 import styled, { css } from "styled-components/native";
 
 export const Container = styled.KeyboardAvoidingView`
@@ -80,4 +80,8 @@ ${({theme}) => css`
 font-family: ${theme.FONTS.TEXT};
 color: ${theme.COLORS.SECONDARY_900};
 `}
+`;
+
+export const AddButton= styled(Button)`
+margin-bottom: ${getBottomSpace() + 12}px;
 `;

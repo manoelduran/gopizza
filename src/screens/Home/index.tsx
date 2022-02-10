@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { Search } from '@components/Search';
 import { ListHeader } from '@components/ListHeader';
 import { ProductCard, ProductProps } from '@components/ProductCard';
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
     Container,
     Header,
@@ -18,7 +18,8 @@ import {
     LogOut,
     MenuHeader,
     MenuItemsNumber,
-    Title
+    Title,
+    NewProductButton
 } from './styles';
 
 
@@ -54,14 +55,18 @@ export function Home() {
         setSearch('');
         getPizzas('');
     };
+    function handleAdd() {
+        navigation.navigate('Product', {});
+    };
     function handlePizza(id: string) {
         navigation.navigate('Product', {
             id
         });
     };
-    useEffect(() => {
-        getPizzas(search);
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            getPizzas(search);
+        }, []));
     return (
         <Container>
             <Header>
@@ -86,7 +91,7 @@ export function Home() {
             <MenuHeader>
                 <Title>Cardápio</Title>
                 <ListHeader />
-                <MenuItemsNumber>321</MenuItemsNumber>
+                <MenuItemsNumber> {pizzas.length} pizzas </MenuItemsNumber>
             </MenuHeader>
             <FlatList
                 data={pizzas}
@@ -103,6 +108,11 @@ export function Home() {
                     paddingBottom: 125,
                     marginHorizontal: 24
                 }}
+            />
+            <NewProductButton
+                title='Cadastrar Pizza'
+                type='primary'
+                onPress={handleAdd}
             />
         </Container>
     );

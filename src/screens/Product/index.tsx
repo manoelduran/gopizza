@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { View } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { ProductNavigationProps } from '@src/@types/navigation';
@@ -20,12 +21,24 @@ import {
     InputGroup,
     InputGroupHeader,
     Label,
-    MaxCharacters
+    MaxCharacters,
+    AddButton
 } from './styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { ProductProps } from '@components/ProductCard';
 
+
+interface PizzaResponse extends ProductProps {
+    photo_path: string;
+    prices_sizes: {
+        p: string;
+        m: string;
+        g: string;
+    };
+}
 
 export function Product() {
+    const [photoPath, setPhotoPath] = useState('');
     const [image, setImage] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -86,13 +99,49 @@ export function Product() {
                 photoUrl,
                 photo_path: reference.fullPath
             })
-            .then(() => Alert.alert('Cadastro', 'Pizza cadastrada com sucesso!'))
-            .catch(() => Alert.alert('Cadastro', 'Não foi possivel cadastrar a pizza'));
-        setIsLoading(false);
+            .then(() => navigation.navigate('Home'))
+            .catch(() => {
+                setIsLoading(false);
+                Alert.alert('Cadastro', 'Não foi possivel cadastrar a pizza')
+            })
+ 
+
     };
+    function handleDeletePizza() {
+        firestore()
+            .collection('pizzas')
+            .doc(id)
+            .delete()
+            .then(() => {
+                storage()
+                    .ref(photoPath)
+                    .delete()
+            });
+        navigation.navigate('Home');
+    }
     function handleGoBack() {
         navigation.goBack();
     };
+    useEffect(() => {
+        if (id) {
+            firestore()
+                .collection('pizzas')
+                .doc(id)
+                .get()
+                .then(response => {
+                    const product = response.data() as PizzaResponse;
+                    setName(product.name);
+                    setDescription(product.description);
+                    setImage(product.photoUrl);
+                    setSmall(product.prices_sizes.p);
+                    setMedium(product.prices_sizes.m);
+                    setLarge(product.prices_sizes.g);
+                    setPhotoPath(product.photo_path);
+                })
+                .catch(() => Alert.alert('Pizza', 'Não foi possivel carregar os dados da pizza'))
+        }
+    }, [id])
+
     return (
         <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
             <ScrollView showsVerticalScrollIndicator={false} >
@@ -101,13 +150,19 @@ export function Product() {
                         onPress={handleGoBack}
                     />
                     <Title>Cadastrar</Title>
-                    <TouchableOpacity>
-                        <DeleteLabel>Deletar</DeleteLabel>
+                    {id ? < TouchableOpacity >
+                        <DeleteLabel
+                            onPress={handleDeletePizza}>
+                            Deletar
+                        </DeleteLabel>
                     </TouchableOpacity>
+                        :
+                        <View style={{ width: 50 }} />
+                    }
                 </Header>
                 <Upload>
                     <Photo uri={image} />
-                    <PickImageButton title='Carregar' type='primary' onPress={handlePickImage} />
+                    {!id && <PickImageButton title='Carregar' type='primary' onPress={handlePickImage} />}
                 </Upload>
                 <Form>
                     <InputGroup>
@@ -120,7 +175,7 @@ export function Product() {
                     <InputGroup>
                         <InputGroupHeader>
                             <Label>Descrição</Label>
-                            <MaxCharacters> 0 de 60 caracteres </MaxCharacters>
+                            <MaxCharacters> { } de 60 caracteres </MaxCharacters>
                         </InputGroupHeader>
                         <Input
                             multiline
@@ -148,13 +203,14 @@ export function Product() {
                             value={large}
                         />
                     </InputGroup>
-                    <Button
-                        title='Cadastrar pizza'
-                        isLoading={isLoading}
-                        onPress={handleAddPizza}
-                    />
+                    {!id && <AddButton
+                    title='Cadastrar pizza'
+                    type='secundary'
+                    isLoading={isLoading}
+                    onPress={handleAddPizza}
+                />}
                 </Form>
             </ScrollView>
-        </Container>
+        </Container >
     );
 }
