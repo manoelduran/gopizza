@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/native";
 
-export interface RadioButtonCssProps {
+export type RadioButtonCssProps = {
     selected: boolean;
 };
 
@@ -19,7 +19,7 @@ export const Title = styled.Text`
 font-size: 16px;
 ${({ theme }) => css`
     font-family: ${theme.FONTS.TITLE};
-    background-color: ${theme.COLORS.SECONDARY_900};
+    color: ${theme.COLORS.SECONDARY_900};
 `};
 `;
 

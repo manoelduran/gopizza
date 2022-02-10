@@ -8,14 +8,16 @@ import {
     Title
 } from './styles';
 
-interface RadioButtonProps extends RadioButtonCssProps, TouchableOpacityProps {
+type RadioButtonProps = TouchableOpacityProps & RadioButtonCssProps & {
     title: string;
 };
 
 export function RadioButton({ title, selected = false, ...rest }: RadioButtonProps) {
     return (
         <Container selected={selected} {...rest} >
-            <Radio> {selected && <Selected />} </Radio>
+            <Radio>
+                {selected && <Selected />}
+            </Radio>
             <Title> {title} </Title>
         </Container>
     );
