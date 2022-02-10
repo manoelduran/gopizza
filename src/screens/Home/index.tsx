@@ -24,7 +24,7 @@ import {
 
 
 export function Home() {
-    const { signOut } = useAuth();
+    const { signOut, user } = useAuth();
     const navigation = useNavigation();
     const theme = useTheme();
     const [pizzas, setPizzas] = useState<ProductProps[]>([]);
@@ -59,7 +59,8 @@ export function Home() {
         navigation.navigate('Product', {});
     };
     function handlePizza(id: string) {
-        navigation.navigate('Product', {
+        const route = user?.isAdmin ? 'Product' : 'Order';
+        navigation.navigate(route, {
             id
         });
     };
@@ -72,7 +73,10 @@ export function Home() {
             <Header>
                 <Greeting>
                     <GreetingEmoji source={happyEmoji} />
-                    <GreetingText>Olá, Admin</GreetingText>
+                    {user?.isAdmin ?
+                        <GreetingText>Olá, Admin</GreetingText>
+                        :
+                        <GreetingText>Olá, Garçom</GreetingText>}
                 </Greeting>
                 <LogOut onPress={signOut} >
                     <MaterialIcons
@@ -109,11 +113,13 @@ export function Home() {
                     marginHorizontal: 24
                 }}
             />
-            <NewProductButton
-                title='Cadastrar Pizza'
-                type='primary'
-                onPress={handleAdd}
-            />
+            {
+                user?.isAdmin && <NewProductButton
+                    title='Cadastrar Pizza'
+                    type='primary'
+                    onPress={handleAdd}
+                />
+            }
         </Container>
     );
 }

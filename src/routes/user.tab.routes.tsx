@@ -4,12 +4,13 @@ import { Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { Home } from '@screens/Home';
 import { Orders } from '@screens/Orders';
+import { BottomMenu } from '@components/BottomMenu';
 
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export function UserTabRoutes() {
-        const theme = useTheme();
+    const theme = useTheme();
     return (
         <Navigator
             screenOptions={{
@@ -26,10 +27,27 @@ export function UserTabRoutes() {
             <Screen
                 name="Home"
                 component={Home}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <BottomMenu
+                            title='Cardápio'
+                            color={color}
+                        />
+                    )
+                }}
             />
-                   <Screen
+            <Screen
                 name="Orders"
                 component={Orders}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <BottomMenu
+                            title='Pedidos'
+                            color={color}
+                            notifications="0"
+                        />
+                    )
+                }}
             />
         </Navigator>
     );

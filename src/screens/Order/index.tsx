@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
-import { Platform, ScrollView } from 'react-native';
-import { PIZZA_TYPES } from '@utils/pizzaTypes';
+import { useNavigation } from '@react-navigation/native';
 import { BackButton } from '@components/BackButton';
 import { RadioButton } from '@components/RadioButton';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { PIZZA_TYPES } from '@utils/pizzaTypes';
 import {
     Container,
     Header,
@@ -20,18 +21,19 @@ import {
     Scroll
 } from './styles';
 
-
-
-
 export function Order() {
     const [size, setSize] = useState('');
     const theme = useTheme();
+    const navigation = useNavigation();
+    function handleGoBack() {
+        navigation.goBack();
+    };
     return (
         <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined}  >
             <Scroll>
                 <Header>
                     <BackButton
-                        onPress={() => { }}
+                        onPress={handleGoBack}
                         style={{ marginBottom: 108 }}
                     />
                 </Header>
